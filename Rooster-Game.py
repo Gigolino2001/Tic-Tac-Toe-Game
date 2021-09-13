@@ -183,7 +183,19 @@ def set_ComputerChoice(board,player,mode):
             if pos in (2,4,6,8):
                 return pos
         return False
-
+    
+    def set_Vitory(board,player):
+        free_positions = get_FreePositions(board)
+        for pos in free_positions:
+            line = get_Line(board, pos)
+            cont = 0
+            for value in line:
+                if value == player:
+                    cont+=1
+            if cont == 2:
+                return pos
+        return False
+        
     def set_EasyChoice(board):
         pos = get_CriteriaCentre(board)
         if not pos:
