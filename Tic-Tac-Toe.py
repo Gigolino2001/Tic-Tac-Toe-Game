@@ -287,6 +287,24 @@ def set_ComputerChoice(board, player, mode):
     return 0
 
 
+def set_restart():
+    rr = input("Did you want to play again[yes/no]?:")
+    if rr == "yes":
+        symbol = input("Digit your symbol [X/O] : ")
+        mode = input("Digit the mode [Easy/Normal]: ")
+        if symbol not in ("X", "O") or mode not in ("Easy", "Normal"):
+            raise ValueError("set_restart: argument is invalid")
+        else:
+            print("\n")
+            game(symbol, mode)
+    elif rr == "no":
+        print("THANKS FOR PLAYING ;)")
+        return "SUCESS"
+
+    else:
+        raise ValueError("set_restart: argument is invalid")
+
+
 def game(symbol, mode):
     def character_ToNumber(values):
         switcher = {"O": -1, "X": 1}
@@ -298,6 +316,7 @@ def game(symbol, mode):
     player = character_ToNumber(symbol)
     computer = -int(character_ToNumber(symbol))
     print("Welcome to Tic-Tac-Toe Game.\nYou play with '" + symbol + "'.")
+    draw_flag = 1
     while get_FreePositions(board):
         print("Computer turn (" + mode + "):")
         board = set_ChangeinBoard(
@@ -306,21 +325,22 @@ def game(symbol, mode):
         print(board_ToString(board))
         winner = get_Winner(board)
         if winner != 0:
-            return number_ToCharacter(winner)
+            print("\nWinner:" + number_ToCharacter(winner))
+            draw_flag = 0
+            break
         if get_FreePositions(board):
             board = set_ChangeinBoard(board, player, set_PlayerChoice(board))
             print(board_ToString(board))
             winner = get_Winner(board)
             if winner != 0:
-                return number_ToCharacter(winner)
+                print("\nWinner:" + number_ToCharacter(winner))
+                draw_flag = 0
+                break
         else:
             break
-    return "DRAW"
+    if draw_flag == 1:
+        print("\nDraw")
+    set_restart()
 
 
-player = 1
-pos = 7
-tab = ((0, 0, -1), (-1, 1, 0), (1, 0, 0))
-
-
-print(game("O", "Normal"))
+print(game("O", "Easy"))
