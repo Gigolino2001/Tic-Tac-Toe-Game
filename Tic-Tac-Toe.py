@@ -1,7 +1,7 @@
-# ROOSTER GAME
+# TIC TAC TOE GAME
 
 # Player vs computer 
-# 3 modes of difficulty (Easy, Normal, Hard)
+# 3 modes of difficulty (Easy, Normal)
 # Symbols "X" and "O"
 # Board 3x3
 #                Column
@@ -184,16 +184,51 @@ def set_ComputerChoice(board,player,mode):
                 return pos
         return False
     
-    def set_Vitory(board,player):
+    def get_CriteriaVictory(board,player):
         free_positions = get_FreePositions(board)
         for pos in free_positions:
-            line = get_Line(board, pos)
+            if 0 < pos < 4:
+                line = get_Line(board,1)
+            elif 3 < pos < 7:
+                line = get_Line(board,2)
+            else:
+                line = get_Line(board, 3)
             cont = 0
             for value in line:
                 if value == player:
                     cont+=1
             if cont == 2:
                 return pos
+        return False
+
+    def get_CriteriaBlockOpponent(board, player):
+        free_positions = get_FreePositions(board)
+        for pos in free_positions:
+            if 0 < pos < 4:
+                line = get_Line(board,1)
+            elif 3 < pos < 7:
+                line = get_Line(board,2)
+            else:
+                line = get_Line(board, 3)
+            cont = 0
+            for value in line:
+                if value != player and value != 0:
+                    cont+=1
+            if cont == 2:
+                return pos
+        return False
+
+    def get_CriteriaOpponentCorner(board, player):
+        diagonal1 = get_Diagonal(board, 1)
+        diagonal2 = get_Diagonal(board, 2)
+        if diagonal1[0] == 0 and diagonal1[2] != player and diagonal1[2] != 0:
+            return 1
+        if diagonal2[0] == 0 and diagonal2[2] != player and diagonal2[2] != 0:
+            return 7
+        if diagonal1[2] == 0 and diagonal1[0] != player and diagonal1[0] != 0:
+            return 9
+        if diagonal2[2] == 0 and diagonal2[0] != player and diagonal2[0] != 0:
+            return 3
         return False
         
     def set_EasyChoice(board):
@@ -208,7 +243,27 @@ def set_ComputerChoice(board,player,mode):
             return pos
 
     def set_NormalChoice(board,player):
-        return 0
+        pos = get_CriteriaVictory(board,player)
+        if not pos :
+            pos = get_CriteriaBlockOpponent(board,player)
+            if not pos:    
+                pos = get_CriteriaCentre(board)
+                if not pos:
+                    pos = get_CriteriaOpponentCorner(board,player)    
+                    if not pos:
+                        pos = get_CriteriaEmptyCorner(board)
+                        if not pos:
+                            return get_CriteriaEmptySide(board)
+                        else:
+                            return pos
+                    else:
+                        return pos
+                else:
+                    return pos
+            else:
+                return pos
+        else:
+            return pos
 
     def set_HardChoice(board,player):
         return 0
@@ -229,5 +284,7 @@ def set_ComputerChoice(board,player,mode):
 
 player = 1
 pos = 7
-tab = ((1,1,1),(1,0,1),(-1,1,1))
-print(set_ComputerChoice(tab,player,"Easy"))
+tab = ((0,0,-1),(-1,1,0),(1,0,0))
+
+
+print(set_ComputerChoice(tab,player,"Normal"))
