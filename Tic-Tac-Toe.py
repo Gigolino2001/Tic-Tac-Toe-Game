@@ -1,17 +1,25 @@
-# TIC TAC TOE GAME
-
-# Player vs computer
-# 3 modes of difficulty (Easy, Normal)
-# Symbols "X" and "O"
-# Board 3x3
-#                Column
-#           |1|   |2|   |3|
-#       |1|  1     2     3
-# Line  |2|  4     5     6
-#       |3|  7     8     9
+######################################################
+#  Gigolino2001 -> https://github.com/Gigolino2001   #
+######################################################
+#               TIC TAC TOE GAME                     #
+#                                                    #
+#   -Player vs computer                              #
+#   -2 modes of difficulty (Easy, Normal)            #
+#   -Symbols "X" and "O"                             #
+#   -Board 3x3                                       #
+#                    Column                          #
+#               |1|   |2|   |3                       #
+#           |1|  1     2     3                       #
+#     Line  |2|  4     5     6                       #
+#           |3|  7     8     9                       #
+#                                                    #
+######################################################
 
 
 def is_Board(board):
+
+    """Verifies if the argument is a valid board."""
+
     if isinstance(board, tuple) and len(board) == 3:
         for subtuples in board:
             if isinstance(subtuples, tuple) and len(subtuples) == 3:
@@ -31,14 +39,23 @@ def is_Board(board):
 
 
 def is_Position(value):
+
+    """Verifies if the argument is a valid position."""
+
     return isinstance(value, int) and value in range(1, 10)
 
 
 def is_Player(value):
+
+    """Verifies if the argument is a valid player."""
+
     return value == -1 or value == 1
 
 
 def get_Column(board, value):
+
+    """Given board and a position returns the position's column."""
+
     if is_Board(board) and isinstance(value, int) and value in range(1, 4):
         column = ()
         for subtuples in board:
@@ -49,6 +66,9 @@ def get_Column(board, value):
 
 
 def get_Line(board, value):
+
+    """Given board and a position returns the position's line."""
+
     if is_Board(board) and isinstance(value, int) and value in range(1, 4):
         return board[value - 1]
     else:
@@ -56,6 +76,9 @@ def get_Line(board, value):
 
 
 def get_Diagonal(board, value):
+
+    """Given board and a position returns the position's diagonal."""
+
     if is_Board(board) and isinstance(value, int) and value in range(1, 3):
         diagonal = ()
         aux_value = 0
@@ -74,11 +97,16 @@ def get_Diagonal(board, value):
 
 
 def number_ToCharacter(values):
+
+    """Switches the code symbols to visual symbols."""
+
     switcher = {-1: " O ", 0: "   ", 1: " X "}
     return switcher.get(values)
 
 
 def board_ToString(board):
+
+    """Convert the code board to visual board."""
 
     if not is_Board(board):
         raise ValueError("board_ToString: argument is invalid")
@@ -98,6 +126,9 @@ def board_ToString(board):
 
 
 def is_FreePosition(board, value):
+
+    """Checks if a given position is free or ocupated."""
+
     def value_ToBool(value):
         return value == 0
 
@@ -112,6 +143,9 @@ def is_FreePosition(board, value):
 
 
 def get_FreePositions(board):
+
+    """Gets all free positions from the board."""
+
     if not is_Board(board):
         raise ValueError("get_FreePositions: argument is invalid")
     free_positions = ()
@@ -122,6 +156,9 @@ def get_FreePositions(board):
 
 
 def get_Winner(board):
+
+    """Gets the winner of the game."""
+
     if not is_Board(board):
         raise ValueError("get_Winner: argument is invalid")
 
@@ -144,6 +181,9 @@ def get_Winner(board):
 
 
 def set_ChangeinBoard(board, player, position):
+
+    """Modifies the board after the player choose a position to play."""
+
     if (
         not is_Board(board)
         or not is_Player(player)
@@ -169,6 +209,9 @@ def set_ChangeinBoard(board, player, position):
 
 
 def set_PlayerChoice(board):
+
+    """Gets the position that the player wants to play."""
+
     pos = int(input("Player turn. Choose a free position: "))
     if not is_Board(board) or not is_FreePosition(board, pos):
         raise ValueError("set_PlayerChoise: argument is invalid")
@@ -176,27 +219,42 @@ def set_PlayerChoice(board):
 
 
 def set_ComputerChoice(board, player, mode):
-    def get_CriteriaCentre(board):
+
+    """Gets the position that the Computer wants to play."""
+
+    def get_CriterionCentre(board):
+
+        """Criterion that plays in the middle position."""
+
         if is_FreePosition(board, 5):
             return 5
         else:
             return False
 
-    def get_CriteriaEmptyCorner(board):
+    def get_CriterionEmptyCorner(board):
+
+        """Criterion that plays in a empty corner."""
+
         free_positions = get_FreePositions(board)
         for pos in free_positions:
             if pos in (1, 3, 7, 9):
                 return pos
         return False
 
-    def get_CriteriaEmptySide(board):
+    def get_CriterionEmptySide(board):
+
+        """Criterion that plays in a empty side."""
+
         free_positions = get_FreePositions(board)
         for pos in free_positions:
             if pos in (2, 4, 6, 8):
                 return pos
         return False
 
-    def get_CriteriaVictory(board, player):
+    def get_CriterionVictory(board, player):
+
+        """Criterion that plays to win the game."""
+
         free_positions = get_FreePositions(board)
         for pos in free_positions:
             if 0 < pos < 4:
@@ -213,7 +271,10 @@ def set_ComputerChoice(board, player, mode):
                 return pos
         return False
 
-    def get_CriteriaBlockOpponent(board, player):
+    def get_CriterionBlockOpponent(board, player):
+
+        """Criterion that block the opponent win."""
+
         free_positions = get_FreePositions(board)
         for pos in free_positions:
             if 0 < pos < 4:
@@ -230,7 +291,10 @@ def set_ComputerChoice(board, player, mode):
                 return pos
         return False
 
-    def get_CriteriaOpponentCorner(board, player):
+    def get_CriterionOpponentCorner(board, player):
+
+        """Criterion that blocks the opponent corner."""
+
         diagonal1 = get_Diagonal(board, 1)
         diagonal2 = get_Diagonal(board, 2)
         if diagonal1[0] == 0 and diagonal1[2] != player and diagonal1[2] != 0:
@@ -244,28 +308,34 @@ def set_ComputerChoice(board, player, mode):
         return False
 
     def set_EasyChoice(board):
-        pos = get_CriteriaCentre(board)
+
+        """Easy mode strategy."""
+
+        pos = get_CriterionCentre(board)
         if not pos:
-            pos = get_CriteriaEmptyCorner(board)
+            pos = get_CriterionEmptyCorner(board)
             if not pos:
-                return get_CriteriaEmptySide(board)
+                return get_CriterionEmptySide(board)
             else:
                 return pos
         else:
             return pos
 
     def set_NormalChoice(board, player):
-        pos = get_CriteriaVictory(board, player)
+
+        """Easy mode strategy."""
+
+        pos = get_CriterionVictory(board, player)
         if not pos:
-            pos = get_CriteriaBlockOpponent(board, player)
+            pos = get_CriterionBlockOpponent(board, player)
             if not pos:
-                pos = get_CriteriaCentre(board)
+                pos = get_CriterionCentre(board)
                 if not pos:
-                    pos = get_CriteriaOpponentCorner(board, player)
+                    pos = get_CriterionOpponentCorner(board, player)
                     if not pos:
-                        pos = get_CriteriaEmptyCorner(board)
+                        pos = get_CriterionEmptyCorner(board)
                         if not pos:
-                            return get_CriteriaEmptySide(board)
+                            return get_CriterionEmptySide(board)
                         else:
                             return pos
                     else:
@@ -288,6 +358,9 @@ def set_ComputerChoice(board, player, mode):
 
 
 def set_restart():
+
+    """Restarts the game if the player wants."""
+
     rr = input("Did you want to play again[yes/no]?:")
     if rr == "yes":
         symbol = input("Digit your symbol [X/O] : ")
@@ -306,6 +379,9 @@ def set_restart():
 
 
 def game(symbol, mode):
+
+    """Run the whole game."""
+
     def character_ToNumber(values):
         switcher = {"O": -1, "X": 1}
         return switcher.get(values)
@@ -343,4 +419,5 @@ def game(symbol, mode):
     set_restart()
 
 
+# EXECUTE YOUR GAME HERE #
 print(game("O", "Easy"))
